@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	android:id="@+id/layout_main"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:orientation="vertical"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+<TextView
+	android:id="@+id/textview_title"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:text="OGame Fleet Saver" />
+<Spinner
+	android:id="@+id/spinner_speed"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:entries="@array/speed_arrays"
+	android:prompt="@string/speed_prompt" />
+<LinearLayout
+	android:id="@+id/llayout_spacer"
+	android:layout_width="match_parent"
+	android:layout_height="20dp"
+	android:orientation="vertical" />
+<Button
+	android:id="@+id/button_save"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:text="Save Fleet" />
+<LinearLayout
+	android:id="@+id/llayout_spacer"
+	android:layout_width="match_parent"
+	android:layout_height="20dp"
+	android:orientation="vertical" />
+<Button
+	android:id="@+id/button_checkresources"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:text="Check Resources" />
+<LinearLayout
+	android:id="@+id/llayout_spacer"
+	android:layout_width="match_parent"
+	android:layout_height="20dp"
+	android:orientation="vertical" />
+<Button
+	android:id="@+id/button_distributeresources"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:text="Distribute Resources" />
+</LinearLayout>
