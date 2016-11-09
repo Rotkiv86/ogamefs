@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.linked.project.id="sdk" external.linked.project.path="D:/Android/sdk" external.root.project.path="D:/Android/sdk" external.system.id="GRADLE" external.system.module.group="" external.system.module.version="unspecified" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
+    <output url="file://D:/Android/sdk/build/classes/main" />
+    <output-test url="file://D:/Android/sdk/build/classes/test" />
+    <exclude-output />
+    <content url="file://D:/Android/sdk">
+      <excludeFolder url="file://D:/Android/sdk/.gradle" />
+      <excludeFolder url="file://D:/Android/sdk/build" />
+    </content>
+    <orderEntry type="jdk" jdkName="Android API 24 Platform" jdkType="Android SDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>
