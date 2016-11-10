@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 public class OgameFSActivity extends Activity {
-	private Button bSaveFleet, bCheckResources, bDistributeResouces;
+	private Button bSaveFleet, bCallBackFleet, bCheckResources, bDistributeResouces;
 	private Spinner	sSpeedSelector;
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -20,6 +20,8 @@ public class OgameFSActivity extends Activity {
 		sSpeedSelector = (Spinner)findViewById(R.id.spinner_speed);
 
 		bSaveFleet = (Button)findViewById(R.id.button_save);
+		bCallBackFleet = (Button)findViewById(R.id.button_callback);
+		
 		bCheckResources = (Button)findViewById(R.id.button_checkresources);
 		bDistributeResouces = (Button)findViewById(R.id.button_distributeresources);
 
@@ -36,6 +38,13 @@ public class OgameFSActivity extends Activity {
 				fsResponsePopup.show(findViewById(R.id.layout_main));
             }
         });
+		
+		bCallBackFleet.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				CbResponsePopup cbResponsePopup = new CbResponsePopup(getApplicationContext());
+				cbResponsePopup.show(findViewById(R.id.layout_main));
+			}
+		});
 		
 		bDistributeResouces.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {

@@ -2,6 +2,7 @@ package com.ogame.files;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.lang.String;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -19,8 +20,7 @@ public class FsResponsePopup extends PopupWindow {
 	private FileHandler fileHandler;
 	private PageDownloader pageDownloader;
 	private StoredParameters storedParameters;
-	private String mainUrl;
-	private String fleetSpeed;
+	private String mainUrl, fleetSpeed, _pre = "https://";
 	private TextView tFleetsSent;
 	
 	public FsResponsePopup(Context context, String _fleetSpeed) {	
@@ -64,7 +64,7 @@ public class FsResponsePopup extends PopupWindow {
 		}
 		
 		private void sendFleetToFS(String fleetSpeed) {
-			String[] planets = countPlanets(pageDownloader.downloadPagePost("http://hu.ogame.gameforge.com/main/login", storedParameters.getProfileParams()));
+			String[] planets = countPlanets(pageDownloader.downloadPagePost(_pre + "hu.ogame.gameforge.com/main/login", storedParameters.getProfileParams()));
 			
 			int cnt = 1;
 			pProgressBar.setMax(planets.length * 4);
@@ -74,19 +74,19 @@ public class FsResponsePopup extends PopupWindow {
 				String _planet = planets[j].split("\\|")[1];
 				
 				//First flight page
-				String firstFleetPage = pageDownloader.dowloadPageGet("http://" + mainUrl + "/game/index.php?page=fleet1&cp=" + _planetId);
+				String firstFleetPage = pageDownloader.dowloadPageGet(_pre + mainUrl + "/game/index.php?page=fleet1&cp=" + _planetId);
 				pProgressBar.setProgress(cnt++);
 				
 				//Second flight page (select speed, destination planet)			
-				String secondFleetPage = pageDownloader.downloadPagePost("http://" + mainUrl + "/game/index.php?page=fleet2", storedParameters.getFleetShipNumbers(firstFleetPage, _planet));
+				String secondFleetPage = pageDownloader.downloadPagePost(_pre + mainUrl + "/game/index.php?page=fleet2", storedParameters.getFleetShipNumbers(firstFleetPage, _planet));
 				pProgressBar.setProgress(cnt++);
 				
 				//Third flight page (select goal, resources)
-				String thirdFleetPage = pageDownloader.downloadPagePost("http://" + mainUrl + "/game/index.php?page=fleet3", storedParameters.selectSpeedAndPlanet(secondFleetPage, _planet));
+				String thirdFleetPage = pageDownloader.downloadPagePost(_pre + mainUrl + "/game/index.php?page=fleet3", storedParameters.selectSpeedAndPlanet(secondFleetPage, _planet));
 				pProgressBar.setProgress(cnt++);
 				
 				//Sending fleet to FS;
-				pageDownloader.downloadPagePost("http://" + mainUrl + "/game/index.php?page=movement", storedParameters.loadResources(thirdFleetPage, _planet, fleetSpeed));
+				pageDownloader.downloadPagePost(_pre + mainUrl + "/game/index.php?page=movement", storedParameters.loadResources(thirdFleetPage, _planet, fleetSpeed));
 				pProgressBar.setProgress(cnt++);
 			}
 		}

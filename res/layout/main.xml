@@ -27,17 +27,27 @@
 	android:layout_height="wrap_content"
 	android:text="Save Fleet" />
 <LinearLayout
-	android:id="@+id/llayout_spacer"
+	android:id="@+id/llayout_spacer01"
 	android:layout_width="match_parent"
 	android:layout_height="20dp"
 	android:orientation="vertical" />
+<Button
+	android:id="@+id/button_callback"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:text="Call Back Fleet" />
+<LinearLayout
+	android:id="@+id/llayout_spacer02"
+	android:layout_width="match_parent"
+	android:layout_height="20dp"
+	android:orientation="vertical" />	
 <Button
 	android:id="@+id/button_checkresources"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:text="Check Resources" />
 <LinearLayout
-	android:id="@+id/llayout_spacer"
+	android:id="@+id/llayout_spacer03"
 	android:layout_width="match_parent"
 	android:layout_height="20dp"
 	android:orientation="vertical" />

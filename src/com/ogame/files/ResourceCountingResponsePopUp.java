@@ -1,5 +1,6 @@
 package com.ogame.files;
 
+import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -8,6 +9,7 @@ import android.os.AsyncTask;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -16,19 +18,22 @@ public class ResourceCountingResponsePopUp extends PopupWindow {
 	private ProgressBar pProgressBar;
 	private FileHandler fileHandler;
 	private StoredParameters storedParameters;
-	private TextView tIron, tCrystal, tDeuterium, tPiron, tPcrystal, tPdeuterium;
+	private static TextView tIron, tCrystal, tDeuterium, tPiron, tPcrystal, tPdeuterium;
+	private String _pre = "https://";
+	private Calendar timeNow;
 	
 	public ResourceCountingResponsePopUp(Context context) {
 		super(context);
 		View view = LayoutInflater.from(context).inflate(R.layout.popup_countresources, null, false);
 		setContentView(view);
 		setFocusable(true);
-		
-		setWidth(300);
-		setHeight(500);
+
+		setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
+		setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
 		
 		storedParameters = new StoredParameters(context);
 		fileHandler = new FileHandler(context);
+		timeNow = Calendar.getInstance();
 
 		tIron = (TextView)view.findViewById(R.id.textview_iron);
 		tCrystal =  (TextView)view.findViewById(R.id.textview_crystal);
@@ -39,11 +44,36 @@ public class ResourceCountingResponsePopUp extends PopupWindow {
 
 		pProgressBar = (ProgressBar)view.findViewById(R.id.progressbar_countresources);
 
-		new ResourceCountingLongOperation().execute("");
+		String[] resourcesData = fileHandler.getData("resource");
+		if(resourcesData.length > 1) {
+			Calendar resourceCheckTime = Calendar.getInstance();
+			resourceCheckTime.setTimeInMillis(Long.parseLong(resourcesData[0].split("\\|")[1]));
+			if(((timeNow.getTimeInMillis() - resourceCheckTime.getTimeInMillis()) / 60000) > 60) {
+				new ResourceCountingLongOperation().execute("");
+			} else {
+				String[] resourcesArray = new String[6];
+				for(int i = 0; i < 6; i++) {
+					resourcesArray[i] = resourcesData[i].split("\\|")[0].split(":")[1];
+				}
+				ResourceCountingResponsePopUp.showResources(resourcesArray);
+			}
+		} else {
+			new ResourceCountingLongOperation().execute("");
+		}
 	}
 
 	public void show(View anchor) {
 		showAtLocation(anchor, Gravity.CENTER, 0, 0);
+	}
+
+	static void showResources(String[] resourcesArray) {
+		tIron.setText("Iron:\t\t\t\t" + resourcesArray[0]);
+		tCrystal.setText("Crystal:\t\t\t" + resourcesArray[1]);
+		tDeuterium.setText("Deuterium:\t" + resourcesArray[2]);
+
+		tPiron.setText("Iron:\t\t\t\t" + resourcesArray[3]);
+		tPcrystal.setText("Crystal:\t\t\t" + resourcesArray[4]);
+		tPdeuterium.setText("Deuterium:\t" + resourcesArray[5]);
 	}
 	
 	private class ResourceCountingLongOperation extends AsyncTask<String, Void, String> {
@@ -53,8 +83,8 @@ public class ResourceCountingResponsePopUp extends PopupWindow {
 		protected String doInBackground(String... params) {
 			PageDownloader pageDownloader = new PageDownloader();
 			String mainUrl = storedParameters.getUniversumNumber() + "-hu.ogame.gameforge.com";
-
-			String login = pageDownloader.downloadPagePost("http://hu.ogame.gameforge.com/main/login", storedParameters.getProfileParams());
+			
+			String login = pageDownloader.downloadPagePost(_pre + "hu.ogame.gameforge.com/main/login", storedParameters.getProfileParams());
 			String[] planets = countPlanets(login);
 			pProgressBar.setMax(planets.length);
 			
@@ -67,9 +97,8 @@ public class ResourceCountingResponsePopUp extends PopupWindow {
 			resources[4] = 0;
 			resources[5] = 0;
 			int[] _resources = new int[6];
-
-			for(int i = 0; i < planets.length; i++) {
 			
+			for(int i = 0; i < planets.length; i++) {
 				final int _i = i + 1;
 				pProgressBar.setProgress(_i);
 				
@@ -77,7 +106,7 @@ public class ResourceCountingResponsePopUp extends PopupWindow {
 					_resources = getResources(login);
 					addResources(resources, _resources);
 				} else {
-					_resources = getResources(pageDownloader.dowloadPageGet("http://" + mainUrl + "/game/index.php?page=overview&cp=" + planets[i].split("\\|")[0]));
+					_resources = getResources(pageDownloader.dowloadPageGet(_pre + mainUrl + "/game/index.php?page=overview&cp=" + planets[i].split("\\|")[0]));
 					addResources(resources, _resources);
 				}
 			}
@@ -122,36 +151,36 @@ public class ResourceCountingResponsePopUp extends PopupWindow {
 		
 		@Override
 		protected void onPostExecute(String result) {
-			tIron.setText("Iron:\t\t\t\t" + formatNumber(resources[0]));
-			tCrystal.setText("Crystal:\t\t\t" + formatNumber(resources[1]));
-			tDeuterium.setText("Deuterium:\t" + formatNumber(resources[2]));
-		
-			tPiron.setText("Iron:\t\t\t\t" + formatNumber(resources[3]));
-			tPcrystal.setText("Crystal:\t\t\t" + formatNumber(resources[4]));
-			tPdeuterium.setText("Deuterium:\t" + formatNumber(resources[5]));
+			String[] resourcesArray = new String[6];
+			resourcesArray[0] = formatNumber(resources[0]);
+			resourcesArray[1] = formatNumber(resources[1]);
+			resourcesArray[2] = formatNumber(resources[2]);
+			resourcesArray[3] = formatNumber(resources[3]);
+			resourcesArray[4] = formatNumber(resources[4]);
+			resourcesArray[5] = formatNumber(resources[5]);
+
+			ResourceCountingResponsePopUp.showResources(resourcesArray);
+
+			String dataToFile = "";
+			for(int j = 0; j < 6; j++) {
+				dataToFile += "resource:" + formatNumber(resources[j]) + "|" + timeNow.getTimeInMillis() + ";\n";
+			}
+			fileHandler.refreshDataFile("resource", dataToFile);
 		}
 		
 		private String[] countPlanets(String source) {
-			String dataToFile = "";
-					
 			Pattern planetIdRule = Pattern.compile("planet-(\\d+)\">\\s*<[^>]*\\[(\\d*:\\d*:\\d*)\\][^>]*>\\s*<[^>]*>\\s*<[^>]*>([^<]*)<");
 			Matcher planetMatcher = planetIdRule.matcher(source);
 
 			String planetIds = "";
+			String dataToFile = "";
 			while(planetMatcher.find()) {
 				planetIds += planetMatcher.group(1) + "|" + planetMatcher.group(2) + "|" + planetMatcher.group(3) + ",";
 				dataToFile += "planet:" + planetMatcher.group(1) + "|" + planetMatcher.group(2) + "|" + planetMatcher.group(3) + ";\n";
 			}
 			planetIds = planetIds.replaceAll(",$", "");
-					
-			String data[] = fileHandler.readDataFromFile().split(";");
-			for(int a = 0; a < data.length; a++) {
-				if(!data[a].split(":")[0].equals("planet")) {
-					dataToFile += data[a] + ";\n";	
-				}
-			}
-			
-			fileHandler.writeDataToFile(dataToFile);
+
+			fileHandler.refreshDataFile("planet", dataToFile);
 			return planetIds.split(",");
 		}
 		

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,8 +22,8 @@ public class AddUserPopup extends PopupWindow{
 	
 	public AddUserPopup(Context context, OgameFSActivity ogameFSActivity) {
 		super(context);
-		setWidth(300);
-		setHeight(500);
+		setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
+		setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
 		
 		LinearLayout llMain = new LinearLayout(context);
 		
@@ -43,6 +44,7 @@ public class AddUserPopup extends PopupWindow{
 		universums.add("Electra");		//5
 		universums.add("Fromax");		//6
 		universums.add("Gemini");		//7
+		universums.add("Hydra");		//8
 		
 		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, universums);
 		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

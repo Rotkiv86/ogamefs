@@ -1,20 +1,22 @@
 package com.ogame.files;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.lang.String;
+import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import android.content.Context;
 
+
 public class StoredParameters {
 	private List<NameValuePair> params;
 	private FileHandler fileHandler;
 	private String[] user, routes;
-	private String universumNumber;
+	private java.lang.String universumNumber;
 	
 	public StoredParameters(Context fileContext) {
 		fileHandler = new FileHandler(fileContext);
@@ -40,17 +42,20 @@ public class StoredParameters {
 		if(user[2].equals("Gemini")) {
 			universumNumber = "s107";
 		}
+		if(user[2].equals("Hydra")) {
+			universumNumber = "s108";
+		}
 		
-		String[] _r = fileHandler.getRoutes();
+		java.lang.String[] _r = fileHandler.getRoutes();
 		if(_r.length > 1) {
 			routes = new String[_r.length];
 			for(int a = 0; a < _r.length; a++) {
 				routes[a] = _r[a].split("#")[0].split("-")[0].replaceAll("route:", "") + "#" + _r[a].split("#")[0].split("-")[1];
-			}			
+			}
 		}
 	}
 
-	public String getUniversumNumber() {
+	public java.lang.String getUniversumNumber() {
 		return universumNumber;
 	}
 	
@@ -73,7 +78,7 @@ public class StoredParameters {
 		Pattern shipsPattern = Pattern.compile("shipsChosen\",\\s(\\d+),(\\d+)");
 		Matcher shipsMatcher = shipsPattern.matcher(_page);
 		
-		String params = switchPlanet(_planet) + "," +
+		java.lang.String params = switchPlanet(_planet) + "," +
 				"type|1," +
 				"mission|0," +
 				"speed|10,";
@@ -207,9 +212,9 @@ public class StoredParameters {
 	public List<NameValuePair> loadResources(String _page, String _planet, String fleetSpeed) {
 
 		Pattern tokenRule = Pattern.compile("'token'\\s*value='(.*?)'");
-		Matcher tokenMatcher = tokenRule.matcher(_page);
+		Matcher tokenMatcher = tokenRule.matcher((CharSequence) _page);
 
-		String token = "";
+		java.lang.String token = "";
 		if(tokenMatcher.find()) {
 			token = tokenMatcher.group(1);
 		}
@@ -267,7 +272,7 @@ public class StoredParameters {
 				} catch (ArrayIndexOutOfBoundsException e) {
 					value = "";
 				}		
-				params.add(new BasicNameValuePair(name, value));				
+				params.add(new BasicNameValuePair(name, value));
 			}
 		}
 		//System.out.println(params.toString());

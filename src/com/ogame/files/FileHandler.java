@@ -18,7 +18,6 @@ public class FileHandler {
 	public void writeDataToFile(String data) {
 		try {
 			FileOutputStream fileOutputStream = fileContext.openFileOutput("data.ini", Context.MODE_PRIVATE);
-			System.out.println(data);
 			fileOutputStream.write(data.getBytes());
 			fileOutputStream.close();
 		} catch(IOException e) {
@@ -80,5 +79,28 @@ public class FileHandler {
 			}
 		}
 		return routes.split(";");
+	}
+
+	public String[] getData(String row) {
+		String[] fileData = readDataFromFile().split(";");
+		String data = "";
+		for(int i = 0; i < fileData.length; i++) {
+			if(fileData[i].split(":")[0].equals(row)) {
+				data += fileData[i] + ";";
+			}
+		}
+		return data.split(";");
+	}
+
+	public void refreshDataFile(String removable, String newData) {
+		String dataToFile = "";
+		String data[] = this.readDataFromFile().split(";");
+		for(int i = 0; i < data.length; i++) {
+			if(!data[i].split(":")[0].equals(removable)) {
+				dataToFile += data[i] + ";\n";
+			}
+		}
+		dataToFile += newData;
+		this.writeDataToFile(dataToFile);
 	}
 }
