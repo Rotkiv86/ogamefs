@@ -5,7 +5,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.os.AsyncTask;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +24,7 @@ public class ResourceCountingResponsePopUp extends PopupWindow {
 	private String _pre = "https://";
 	private Calendar timeNow;
 	
-	public ResourceCountingResponsePopUp(Context context) {
+	public ResourceCountingResponsePopUp(Context context, boolean force) {
 		super(context);
 		View view = LayoutInflater.from(context).inflate(R.layout.popup_countresources, null, false);
 		setContentView(view);
@@ -30,6 +32,7 @@ public class ResourceCountingResponsePopUp extends PopupWindow {
 
 		setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
 		setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+
 		
 		storedParameters = new StoredParameters(context);
 		fileHandler = new FileHandler(context);
@@ -45,7 +48,7 @@ public class ResourceCountingResponsePopUp extends PopupWindow {
 		pProgressBar = (ProgressBar)view.findViewById(R.id.progressbar_countresources);
 
 		String[] resourcesData = fileHandler.getData("resource");
-		if(resourcesData.length > 1) {
+		if(resourcesData.length > 1 && !force) {
 			Calendar resourceCheckTime = Calendar.getInstance();
 			resourceCheckTime.setTimeInMillis(Long.parseLong(resourcesData[0].split("\\|")[1]));
 			if(((timeNow.getTimeInMillis() - resourceCheckTime.getTimeInMillis()) / 60000) > 60) {
@@ -67,13 +70,13 @@ public class ResourceCountingResponsePopUp extends PopupWindow {
 	}
 
 	static void showResources(String[] resourcesArray) {
-		tIron.setText("Iron:\t\t\t\t" + resourcesArray[0]);
-		tCrystal.setText("Crystal:\t\t\t" + resourcesArray[1]);
-		tDeuterium.setText("Deuterium:\t" + resourcesArray[2]);
+		tIron.setText(resourcesArray[0]);
+		tCrystal.setText(resourcesArray[1]);
+		tDeuterium.setText(resourcesArray[2]);
 
-		tPiron.setText("Iron:\t\t\t\t" + resourcesArray[3]);
-		tPcrystal.setText("Crystal:\t\t\t" + resourcesArray[4]);
-		tPdeuterium.setText("Deuterium:\t" + resourcesArray[5]);
+		tPiron.setText(resourcesArray[3]);
+		tPcrystal.setText(resourcesArray[4]);
+		tPdeuterium.setText(resourcesArray[5]);
 	}
 	
 	private class ResourceCountingLongOperation extends AsyncTask<String, Void, String> {

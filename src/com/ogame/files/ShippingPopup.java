@@ -81,6 +81,7 @@ public class ShippingPopup extends PopupWindow {
 		bShipping.setText("Shipping");
 		bShipping.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
+				planet = sSelectedPlanet.getSelectedItem().toString();
 				String[] resourcesData = fileHandler.getData("resource");
 				int planets = fileHandler.getData("planet").length;
 				for(int i = 0; i < 3; i++) {
@@ -129,22 +130,22 @@ public class ShippingPopup extends PopupWindow {
 			fD[1] = iron;
 			fD[2] = chrystal;
 			fD[3] = deuterium;
-			
+
 			sendFleetsToShipping(fD);
 			dismiss();
-			return "";
+			return null;
 		}
 		
 		private void sendFleetsToShipping(String[] selected) {
 			pageDownloader.downloadPagePost(_pre + "hu.ogame.gameforge.com/main/login", storedParameters.getProfileParams());
-			
+
 			int cnt = 1;
 			pShippingProgressBar.setMax(planets.length * 4);
 
 			String[] planetNames = fileHandler.getPlanets();
 			for(int a = 0; a < planetNames.length; a++) {
 				String planetName = planetNames[a].split("\\|")[2];
-				
+
 				if(!planetName.equals(selected[0].split("-")[0])) {
 					String _planetId = planetNames[a].split("\\|")[0].replaceAll("planet:", "");
 					
@@ -154,7 +155,7 @@ public class ShippingPopup extends PopupWindow {
 					fD[2] = selected[1];
 					fD[3] = selected[2];
 					fD[4] = selected[3];
-					
+
 					//First flight page
 					pShippingProgressBar.setProgress(cnt++);
 					String firstFleetPage = pageDownloader.dowloadPageGet(_pre + mainUrl + "/game/index.php?page=fleet1&cp=" + _planetId);
@@ -162,7 +163,7 @@ public class ShippingPopup extends PopupWindow {
 					//Second flight page (select speed, destination planet)			
 					pShippingProgressBar.setProgress(cnt++);
 					String secondFleetPage = pageDownloader.downloadPagePost(_pre + mainUrl + "/game/index.php?page=fleet2", storedParameters.getFleetShipNumbersToShipping(firstFleetPage, fD));
-					
+
 					//Third flight page (select goal, resources)
 					pShippingProgressBar.setProgress(cnt++);
 					String thirdFleetPage = pageDownloader.downloadPagePost(_pre + mainUrl + "/game/index.php?page=fleet3", storedParameters.selectSpeedAndPlanetToShipping(secondFleetPage, fD));

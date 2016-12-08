@@ -7,10 +7,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Spinner;
 
 public class OgameFSActivity extends Activity {
 	private Button bSaveFleet, bCallBackFleet, bCheckResources, bDistributeResouces;
+	private CheckBox cForceResources;
 	private Spinner	sSpeedSelector;
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -21,13 +23,14 @@ public class OgameFSActivity extends Activity {
 
 		bSaveFleet = (Button)findViewById(R.id.button_save);
 		bCallBackFleet = (Button)findViewById(R.id.button_callback);
-		
+
+		cForceResources = (CheckBox) findViewById(R.id.checkbox_force_resources);
 		bCheckResources = (Button)findViewById(R.id.button_checkresources);
 		bDistributeResouces = (Button)findViewById(R.id.button_distributeresources);
 
 		bCheckResources.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				ResourceCountingResponsePopUp resourceCountingResponsePopUp = new ResourceCountingResponsePopUp(getApplicationContext());
+				ResourceCountingResponsePopUp resourceCountingResponsePopUp = new ResourceCountingResponsePopUp(getApplicationContext(), cForceResources.isChecked());
 				resourceCountingResponsePopUp.show(findViewById(R.id.layout_main));
 			}
 		});
